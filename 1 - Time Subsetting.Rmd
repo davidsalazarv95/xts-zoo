@@ -1,0 +1,75 @@
+---
+title: "Time Subsetting"
+output: html_notebook
+---
+
+```{r}
+library(zoo)
+library(xts)
+```
+
+Note: xts represents dates with the standard ISO 8601:2004 representation: 2000-01-01.
+
+```{r}
+data(edhec, package = "PerformanceAnalytics") # load xts data
+head(edhec)
+```
+
+We can get a whole year: 
+
+```{r}
+edhec["1997"]
+```
+
+Between two dates (including):
+
+```{r}
+edhec["1997-01/1998-10"]
+```
+
+From a given date onwards (including initial Date):
+
+```{r}
+edhec["2008-10/"]
+```
+
+Until a given date (including):
+
+```{r}
+edhec["/1998-01"]
+```
+
+## Other Queries
+
+In addition to time based queries, xts objects can also be subsetted with integers for rows and columns, or with logical subsetting. 
+
+```{r}
+edhec[1 , c("Short Selling", "Funds of Funds")]
+```
+
+```{r}
+edhec[index(edhec)> "2005-01-31", "Funds of Funds"] # equivalent to edhec["2005-02/", c("Funds of Funds")]
+```
+
+To get the integer based version of a Date query, use the argument which.i:
+
+```{r}
+edhec["2009-07/", which.i = TRUE]
+```
+
+Thus, you could say to take all the element that aren't in a certain date interval:
+
+```{r}
+edhec[-edhec["2000-01/2009/", which.i = TRUE]]
+```
+
+Finally, to get certain months at every year, or certain dates, use the family .index functions:
+
+```{r}
+edhec[.indexmon(edhec)== 0]
+
+#SPY[.indexmon(SPY)==0]   # January for all years (note zero-based indexing!)
+#SPY[.indexmday(SPY)==1]  # The first of every month
+#SPY[.indexwday(SPY)==1]
+```
+

@@ -1,0 +1,64 @@
+---
+title: "xts basics"
+output: html_notebook   
+---
+
+# xts
+
+xTensible time series. Flexible and powerful management of time series. At the heart of each xts object: a matrix with an index, which is a date vector. That is exemplified in the xts constructor:
+
+
+```{r, message=FALSE, warning=FALSE}
+library(xts)
+library(zoo)
+x <- matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2)
+idx <- as.Date(c("2015-01-01", "2016-01-01"))
+X <- xts(x, order.by = idx) # use unique argument if you want to enforce unique rows by index. 
+X
+```
+
+## Decomposing: getting the matrix and the index out.
+
+```{r}
+index(X)
+```
+
+```{r}
+coredata(X)
+```
+
+xts benefit over ts: the index can be any type of Date, as internally convertes them all to a same object.
+
+## Converting, Importing and Exporting xts objects
+
+### Converting
+
+```{r}
+data("sunspots")
+head(as.xts(sunspots))
+```
+
+### Reading from csv file via read_csv
+
+From a csv file and tibble:
+
+```{r, message=FALSE, warning=FALSE}
+library(readr)
+library(lubridate)
+datos <- read_csv("inputs2.csv")
+datos$Date <- mdy(datos$Date)
+xts_df = as.xts(datos[,-1], order.by = datos$Date)
+head(xts_df)
+```
+
+### Read Zoo with index directly
+
+```{r}
+xts_zoo <- as.xts(read.zoo(file = "inputs2.csv", format = "%m/%d/%Y", sep = ",", header = TRUE, nrows = 222))
+head(xts_zoo)
+```
+
+```{r}
+write.zoo(xts_zoo, "exported_zoo.csv") #use saveRDS() if object is gonna be used later on.
+```
+
