@@ -1,0 +1,29 @@
+---
+title: "Converting Periodicity"
+output: html_notebook
+---
+
+# To lower periodicity
+
+Finance: OHLC: Open, High, Low, Close of a time series. Time series aggregation is just an application from splitting by group and applying a function to each group. For example, return the OHLC of each group. To do that automatically, use the to.period functions
+
+```{r}
+library(xts)
+data(edhec, package = "PerformanceAnalytics") # load xts data
+head(edhec)
+```
+
+```{r}
+to.period(edhec[,1], period = "years", indexAt = "endof", OHLC = FALSE) # will always get last value of series
+```
+
+```{r}
+to.yearly(edhec[,1], OHLC = FALSE)
+```
+
+To get the first value, do it manually:
+
+```{r}
+do.call(rbind, lapply(split(edhec[,1], "years"), first))
+```
+

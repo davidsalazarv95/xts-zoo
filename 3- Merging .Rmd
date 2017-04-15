@@ -1,0 +1,56 @@
+---
+title: "Merging Time Series"
+output: html_notebook
+---
+
+```{r}
+library(zoo)
+library(xts)
+```
+
+
+# Merging
+
+Merging by column is equivalent to database inner join on the index. xts also supports outer, left and right inner joins.
+
+Two arguments: join = "inner", fill = NA (used if the join is not an inner join).
+
+Note that merging an xts object with a Date object creates a new xts object with the union of the Dates, and the value will be the specified by the fill argument. Thus, it can be useful to create cumulative returns indexes. For example:
+
+```{r}
+obj_1 <- as.xts(matrix(c(0.01, 0.02, 0.03, 0.04), nrow = 2), order.by = as.Date(c("2012-01-04", "2012-02-05")))
+merge(obj_1, index(obj_1)[1] - 1, fill = 1)
+```
+
+That is, when merging with a vector of dates, you're normalizing the series to include those dates on its index. 
+
+## Row binding
+
+rbind()
+
+## Missingness
+
+l.o.c.f: last observation carry forward. 
+
+```{r}
+obj_2 <- as.xts(matrix(c(0.01, NA), nrow = 2), order.by = as.Date(c("2012-01-04", "2012-02-05")))
+na.locf(obj_2)
+```
+
+
+```{r}
+na.locf(obj_2, fromLast = TRUE) # carry the next
+```
+
+Other NA functions are na.fill, na.omit and na.trim
+
+```{r}
+na.trim(obj_2) # from either beginning or end of the series. 
+?na.trim
+```
+
+Linear interpolation for NA observations: na.approx()
+
+
+
+

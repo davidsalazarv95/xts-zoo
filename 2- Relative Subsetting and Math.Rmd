@@ -1,0 +1,56 @@
+---
+title: "Additional Methods and Math with xts"
+output: html_notebook
+---
+
+# Additional Methods
+
+```{r}
+library(zoo)
+library(xts)
+```
+
+xts makes very easy to work with time series. It's very smart! So smart that it can subset the data based on relative remarks. For example, the last two days. Last two months. Last two anything. 
+
+```{r}
+data(edhec, package = "PerformanceAnalytics") # load xts data
+head(edhec)
+```
+
+```{r}
+first(edhec, "12 months")
+```
+
+```{r}
+last(edhec, "2 days")
+```
+
+```{r}
+last(edhec)
+```
+
+```{r}
+last(edhec, n = 2)
+```
+
+```{r}
+first(edhec, n = -100) # The last hundred observations
+```
+
+# Math Operations
+
+Math Operations are on the intersection of times. That is, if given 2 xts objects, xts will first merge (inner join) the two of them and then perform the requested operations. Thus, were you to need to perform a mathematical operation on all the data, you'd need to perform first an outer join of the date indexes, such that both xts objects have the same indexes before the calculation is performed. Of course, this will entail an appropriate filling mechanism. 
+
+```{r}
+a <- as.xts(matrix(1:4, nrow = 2), order.by = as.Date(c("2012-01-04", "2012-01-05")))
+b <- as.xts(matrix(1:4, nrow = 2), order.by = as.Date(c("2012-01-05", "2012-01-06")))
+a + b # just one resulting row
+```
+
+But if we make sure that both objects have the same index:
+
+```{r}
+a + merge(b, index(a), fill = 0)
+```
+
+

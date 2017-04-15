@@ -1,0 +1,20 @@
+---
+title: "Extra Ideas"
+output: html_notebook
+---
+
+Changing the format of the xts:
+
+```{r}
+library(xts)
+data(edhec, package = "PerformanceAnalytics") # load xts data
+head(edhec)
+```
+
+
+```{r}
+Sys.setlocale(locale="es_ES.UTF-8")
+indexFormat(edhec) <- "%B %d, %Y"
+head(edhec)
+```
+

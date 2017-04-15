@@ -1,0 +1,32 @@
+---
+title: "Rolling Functions"
+output: html_notebook
+---
+
+# Discrete Rolling Functions
+
+For example, given logarithmic returns, the cumulative sum of the returns gives us the YTD return for each date. 
+
+```{r}
+library(xts)
+data(edhec, package = "PerformanceAnalytics") # load xts data
+head(edhec)
+```
+
+```{r}
+period.apply(edhec, endpoints(edhec, "years"), function(x) apply(x,2, sum))
+```
+
+```{r}
+# do.call(rbind(lapply(split(edhec, "years"), function(x) apply(x,2,cumsum)))
+as.xts(do.call(rbind, lapply(split(edhec, "years"), cumsum)), index(edhec)[endpoints(edhec, "years")])
+```
+
+## Rolling Functions
+
+For functions that take a rolling window, use the rollapply family. For example, for a rolling standard deviation:
+
+```{r}
+rollapply(edhec, 12, function(x) sd(x)*sqrt(12))
+```
+

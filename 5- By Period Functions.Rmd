@@ -1,0 +1,59 @@
+---
+title: "Apply by Time"
+output: html_notebook
+---
+
+# By time operations
+
+It's very useful to perform certain operations on subsets of data. For example, compute certain operations for each year. That is, the time series version of split-apply-combine. To do that, use the period.apply family of functions. The functions takes three main arguments: the object to split, the endpoints of each period and the function to apply to each period. 
+
+The endpoints refer to the last date of each period. These endpoints can be computed themselves with endpoints(x, on = "years"). Which output is an integer vector of the positions where the groups end. 
+
+
+```{r}
+library(xts)
+data(edhec, package = "PerformanceAnalytics") # load xts data
+head(edhec)
+```
+
+```{r}
+period.apply(edhec, endpoints(edhec, on = "years"), mean)
+```
+
+Due to the repetitive nature of computing the endpoints() (starting on zero), there are convenient functions to perform these. For example: 
+
+```{r}
+#apply.daily()
+#apply.monthly()
+#apply.quarterly()
+```
+
+To have greater control and to get the actual split data, use split.xts:
+
+```{r}
+edhec_years <- split.xts(edhec, f = "years")
+edhec_years[[1]]
+```
+
+In addition to each period, you can find the Kth
+K
+t
+h
+ period by utilizing the k argument. For example, setting the arguments of your endpoints() call to on = "weeks", k = 2, would generate the final day of every other week in your data.
+
+For a final example, the problem of finding the last return for each week can be accomplished by finding the index of the last day of the week, for each week, and then subsetting on this index.
+
+```{r}
+edhec[endpoints(edhec, on = "years")]
+```
+
+Finding the first obs of each year would be:
+
+```{r}
+apply.yearly(edhec, first) # problem with the index
+```
+
+```{r}
+do.call(rbind, lapply(split(edhec, "years"), first))
+```
+

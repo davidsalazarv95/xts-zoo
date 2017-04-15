@@ -1,0 +1,26 @@
+---
+title: "Lag Operators"
+output: html_notebook
+---
+
+# Lags
+
+Lags let you align this period observations with past or forward expectations. Thus, lag(x, 1) is equivalent to aligning today's observations with yerstedays observations. Equivalently, lag(x, -1) will align today's observations with tomorrow's.
+
+An important caveat is that the behavior of lags in xts is the opposite of the behavior of the lag in zoo and base R. 
+
+```{r}
+library(xts)
+xtsobj <- as.xts( matrix(1:4, ncol = 2), as.Date(c("2014-02-01", "2014-03-01")))
+cbind(xtsobj, lag(xtsobj, 1))
+```
+
+
+## Difference Operators
+
+The difference operator computes the difference between todays' observations and yesterday's observation, or some period before. For example:
+
+```{r}
+diff(xtsobj - 1)
+```
+
